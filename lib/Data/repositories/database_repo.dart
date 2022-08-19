@@ -15,9 +15,10 @@ class NoteRepository {
 
   // gets all notes from database
   Future<Either<NoteError, List<Note>>> getAllNotes() async {
-   RawData rawData= await _databaseProvider.readAllNotes();
-   if (rawData.status == CrudStatus.success) {
-      return Right(rawData.data);
+    RawData rawData = await _databaseProvider.readAllNotes();
+    if (rawData.status == CrudStatus.success) {
+      List<Note> notes = rawData.data;
+      return Right(notes);
     } else {
       return Left(NoteError(rawData.data));
     }
@@ -40,6 +41,46 @@ class NoteRepository {
       return Right(rawData.data);
     } else {
       return Left(NoteError(rawData.data));
+    }
+  }
+
+  // update note in database
+  Future<Either<NoteError, Note>> updateNote(
+      {String? title, String? body, required String currentTitle}) async {
+    if (title != null) {
+      RawData result = await _databaseProvider.updateNote(
+          currentTitle: currentTitle, newTitle: title);
+      if (result.status == CrudStatus.success) {
+        return Right(result.data);
+      } else if (result.status == CrudStatus.failure) {
+        return Left(NoteError(result.data));
+      }
+    }
+    if (body != null) {
+      RawData result = await _databaseProvider.updateNote(
+          currentTitle: currentTitle, newBody: body);
+      if (result.status == CrudStatus.success) {
+        return Right(result.data);
+      } else if (result.status == CrudStatus.failure) {
+        return Left(NoteError(result.data));
+      } else {
+        return Left(NoteError('UNEXPECTED ERRO'));
+      }
+    }
+    if (title == null && body == null) {
+      return Left(NoteError('title and body was null'));
+    }
+
+    return Left(NoteError('sth goes wrong'));
+  }
+
+  //init databse
+  Future<Either<NoteError, bool>> initDataBase() async {
+    bool initResult = await _databaseProvider.initDb();
+    if (initResult) {
+      return const Right(true);
+    } else {
+      return left(NoteError('cant init DataBase'));
     }
   }
 }

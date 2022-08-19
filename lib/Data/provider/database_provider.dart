@@ -76,7 +76,7 @@ class DataBaseProvider {
       if (newTitle != null) {
         currentNote.copyWith(title: newTitle);
         currentNote.save();
-        return RawData(status: CrudStatus.success);
+        return RawData(status: CrudStatus.success, data: currentNote);
       }
       if (newBody != null) {
         currentNote.copyWith(body: newBody);
