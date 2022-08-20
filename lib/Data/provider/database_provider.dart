@@ -10,40 +10,14 @@ import 'package:hive_flutter/hive_flutter.dart';
 class DataBaseProvider {
   static String _boxName = 'NoteBox';
   Box<Note>? _noteBox;
-  Future<bool> _initAdaptors() async {
-    log("******REGESTRING_ADAPTER*******");
-
-    try {
-      Hive.registerAdapter(NoteAdapter());
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  // stream of changes from db
-
-  Future<bool> _initNoteBox() async {
-    try {
-      log("******INITING_NOTE_BOX*******");
-      if (await Hive.boxExists(_boxName)) {
-        _noteBox = Hive.box(_boxName);
-        return true;
-      } else {
-        _noteBox = await Hive.openBox(_boxName);
-        return true;
-      }
-    } catch (e) {
-      return false;
-    }
-  }
 
   Future<bool> initDb() async {
     try {
-      log("******INitingDatabase*******");
+      log("******INitingDatabase*******",name: 'DB_PROVIDER');
 
-      var adapter = await _initAdaptors();
-      var noteBox = await _initNoteBox();
-      if (adapter && noteBox) {
+      var adapter = Hive.registerAdapter(NoteAdapter());
+      _noteBox = await Hive.openBox(_boxName);
+      if ( _noteBox!=null) {
         return true;
       } else {
         return false;
@@ -55,7 +29,7 @@ class DataBaseProvider {
 
   Future<RawData> createNote({required Note note}) async {
     try {
-      log('********creating_Note:{title :${note.title}, body:${note.body},********');
+      log('********creating_Note:{title :${note.title}, body:${note.body},********',name: 'DB_PROVIDER');
       int noteCreated = await _noteBox!.add(note);
       var createdNote = _noteBox!.getAt(noteCreated);
       return RawData(status: CrudStatus.success, data: createdNote);
@@ -70,7 +44,7 @@ class DataBaseProvider {
     String? newBody,
   }) async {
     try {
-      log("******updating note*******");
+      log("******updating note*******",name: 'DB_PROVIDER');
       Note currentNote = _noteBox!.values
           .firstWhere((element) => element.title == currentTitle);
       if (newTitle != null) {
@@ -93,18 +67,22 @@ class DataBaseProvider {
 
   Future<RawData> readAllNotes() async {
     try {
-      log("******READRING ALL NOTES*******");
+      if (!await Hive.boxExists(_boxName)) {
+        _noteBox = await Hive.openBox(_boxName);
+      }
+      log("******READRING ALL NOTES*******",name: 'DB_PROVIDER');
 
       List<Note> notes = _noteBox!.values.toList();
       return RawData(status: CrudStatus.success, data: notes);
     } catch (e) {
-      return RawData(status: CrudStatus.failure, data: e.toString());
+      throw e;
+      // return RawData(status: CrudStatus.failure, data: e.toString());
     }
   }
 
   Future<RawData> deleteSingleNote({required String title}) async {
     try {
-      log("******DELETEING NOTE*******");
+      log("******DELETEING NOTE*******",name: 'DB_PROVIDER');
 
       Note note =
           _noteBox!.values.firstWhere((element) => element.title == title);
@@ -114,6 +92,4 @@ class DataBaseProvider {
       return RawData(status: CrudStatus.failure, data: e.toString());
     }
   }
-
-  
 }

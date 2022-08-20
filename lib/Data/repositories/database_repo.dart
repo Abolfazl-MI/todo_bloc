@@ -8,11 +8,6 @@ import 'package:todo_bloc/core/rawdata_modle.dart';
 class NoteRepository {
   final DataBaseProvider _databaseProvider = DataBaseProvider();
 
-  // database repository constructor
-  NoteRepository() {
-    _databaseProvider.initDb();
-  }
-
   // gets all notes from database
   Future<Either<NoteError, List<Note>>> getAllNotes() async {
     RawData rawData = await _databaseProvider.readAllNotes();
@@ -67,6 +62,7 @@ class NoteRepository {
         return Left(NoteError('UNEXPECTED ERRO'));
       }
     }
+
     if (title == null && body == null) {
       return Left(NoteError('title and body was null'));
     }
@@ -74,11 +70,16 @@ class NoteRepository {
     return Left(NoteError('sth goes wrong'));
   }
 
-  //init databse
-  Future<Either<NoteError, bool>> initDataBase() async {
+  //init databse and loads all notes exists inside
+  Future<Either<NoteError, List<Note>>> initDataBase() async {
     bool initResult = await _databaseProvider.initDb();
     if (initResult) {
-      return const Right(true);
+      RawData rawData = await _databaseProvider.readAllNotes();
+      if (rawData.status == CrudStatus.success) {
+        return Right(rawData.data);
+      } else {
+        return Left(NoteError('cant load Notes from db'));
+      }
     } else {
       return left(NoteError('cant init DataBase'));
     }
