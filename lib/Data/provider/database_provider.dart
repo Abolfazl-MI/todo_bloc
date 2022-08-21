@@ -8,16 +8,16 @@ import 'package:todo_bloc/core/rawdata_modle.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class DataBaseProvider {
-  static String _boxName = 'NoteBox';
+  static final String _boxName = 'NoteBox';
   Box<Note>? _noteBox;
 
   Future<bool> initDb() async {
     try {
-      log("******INitingDatabase*******",name: 'DB_PROVIDER');
+      log("******INitingDatabase*******", name: 'DB_PROVIDER');
 
-      var adapter = Hive.registerAdapter(NoteAdapter());
+      Hive.registerAdapter(NoteAdapter());
       _noteBox = await Hive.openBox(_boxName);
-      if ( _noteBox!=null) {
+      if (_noteBox != null) {
         return true;
       } else {
         return false;
@@ -29,9 +29,17 @@ class DataBaseProvider {
 
   Future<RawData> createNote({required Note note}) async {
     try {
-      log('********creating_Note:{title :${note.title}, body:${note.body},********',name: 'DB_PROVIDER');
+      log('********creating_Note:{title :${note.title}, body:${note.body},********',
+          name: 'DB_PROVIDER');
+
+      if (_noteBox == null) {
+        _noteBox = await Hive.openBox(_boxName);
+      }
       int noteCreated = await _noteBox!.add(note);
       var createdNote = _noteBox!.getAt(noteCreated);
+      print(
+        '${createdNote?.title},${createdNote?.body}',
+      );
       return RawData(status: CrudStatus.success, data: createdNote);
     } catch (e) {
       return RawData(status: CrudStatus.failure, data: e.toString());
@@ -44,7 +52,7 @@ class DataBaseProvider {
     String? newBody,
   }) async {
     try {
-      log("******updating note*******",name: 'DB_PROVIDER');
+      log("******updating note*******", name: 'DB_PROVIDER');
       Note currentNote = _noteBox!.values
           .firstWhere((element) => element.title == currentTitle);
       if (newTitle != null) {
@@ -70,7 +78,7 @@ class DataBaseProvider {
       if (!await Hive.boxExists(_boxName)) {
         _noteBox = await Hive.openBox(_boxName);
       }
-      log("******READRING ALL NOTES*******",name: 'DB_PROVIDER');
+      log("******READRING ALL NOTES*******", name: 'DB_PROVIDER');
 
       List<Note> notes = _noteBox!.values.toList();
       return RawData(status: CrudStatus.success, data: notes);
@@ -82,7 +90,7 @@ class DataBaseProvider {
 
   Future<RawData> deleteSingleNote({required String title}) async {
     try {
-      log("******DELETEING NOTE*******",name: 'DB_PROVIDER');
+      log("******DELETEING NOTE*******", name: 'DB_PROVIDER');
 
       Note note =
           _noteBox!.values.firstWhere((element) => element.title == title);

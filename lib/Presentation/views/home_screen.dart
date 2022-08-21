@@ -1,32 +1,35 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo_bloc/Data/repositories/database_repo.dart';
-// import 'package:todo_bloc/Presentation/bloc/note_bloc.dart';
 import 'package:todo_bloc/Presentation/note_bloc/note_bloc.dart';
 import 'package:todo_bloc/Presentation/views/note_detail_screen.dart';
-import 'package:zefyrka/zefyrka.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    ZefyrController controller = ZefyrController();
+
     return BlocProvider(
       lazy: false,
       create: (context) => NoteBloc(
         noteRepository: RepositoryProvider.of(context),
       )..add(IntitNoteDB()),
       child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => Navigator.of(context).pushNamed('/note_add_update', arguments: {'pageType':'add'}),
+          child: const Icon(
+            Icons.note_add,
+          ),
+        ),
+        // floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
         appBar: AppBar(
-          title: Text('Notes app'),
+          title: const Text('Notes app'),
           centerTitle: true,
           actions: [
             IconButton(
               onPressed: () {},
-              icon: Icon(Icons.light),
+              icon: const Icon(Icons.light),
             )
           ],
         ),
@@ -35,13 +38,13 @@ class HomeScreen extends StatelessWidget {
             child: BlocConsumer<NoteBloc, NoteState>(
               builder: (context, state) {
                 if (state is NoteLoadingState) {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 }
                 if (state is NoteLoadedState) {
                   if (state.loadedNotes.isEmpty) {
-                    return Center(
+                    return const Center(
                       child: Text('no Note here :)'),
                     );
                   } else {
@@ -59,6 +62,7 @@ class HomeScreen extends StatelessWidget {
                                     builder: (context) => NoteDetailScreen()));
                               },
                               child: Card(
+                                elevation: 8,
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Column(
@@ -70,18 +74,17 @@ class HomeScreen extends StatelessWidget {
                                       Center(
                                           child: Text(
                                         state.loadedNotes[index].title!,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 18),
                                       )),
                                       Text(
                                         'created at : ${state.loadedNotes[index].createdTime}',
-                                        style: TextStyle(fontSize: 12),
+                                        style: const TextStyle(fontSize: 12),
                                       ),
                                     ],
                                   ),
                                 ),
-                                elevation: 8,
                               ),
                             ),
                           ),
@@ -92,7 +95,7 @@ class HomeScreen extends StatelessWidget {
                 }
                 if (state is NoteErrorState) {
                   return AlertDialog(
-                    title: Text('Error'),
+                    title: const Text('Error'),
                     content: Text(state.error),
                   );
                 }
@@ -104,48 +107,3 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-
-
-/* 
-ListView.builder(
-            itemCount: 20,
-            itemBuilder: ((context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  width: width,
-                  height: 90,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => NoteDetailScreen()));
-                    },
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Center(
-                                child: Text(
-                              'Title',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
-                            )),
-                            Text(
-                              'created at : 1400/4/27',
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ],
-                        ),
-                      ),
-                      elevation: 8,
-                    ),
-                  ),
-                ),
-              );
-            }),
-          ),
-
- */

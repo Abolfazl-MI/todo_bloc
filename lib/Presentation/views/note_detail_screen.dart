@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:todo_bloc/Presentation/views/home_screen.dart';
 import 'package:zefyrka/zefyrka.dart';
 
 class NoteDetailScreen extends StatefulWidget {
+  const NoteDetailScreen({Key? key}) : super(key: key);
+
   @override
   State<NoteDetailScreen> createState() => _NoteDetailScreenState();
 }
@@ -11,15 +12,16 @@ class NoteDetailScreen extends StatefulWidget {
 class _NoteDetailScreenState extends State<NoteDetailScreen> {
   ZefyrController controller = ZefyrController();
   bool editable = true;
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () => _onBackPress(context),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('title'),
+          title: const Text('title'),
           centerTitle: true,
           actions: [
-            IconButton(onPressed: () {}, icon: Icon(Icons.delete_outlined)),
+            IconButton(onPressed: () {}, icon: const Icon(Icons.delete_outlined)),
             IconButton(
                 onPressed: () {
                   setState(() {
@@ -27,7 +29,7 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
                     print(editable);
                   });
                 },
-                icon: Icon(Icons.edit_outlined)),
+                icon: const Icon(Icons.edit_outlined)),
           ],
         ),
         body: Column(
@@ -40,7 +42,7 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
               readOnly: false,
               autofocus: true,
               showCursor: true,
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               scrollable: true,
               focusNode: FocusNode(
                 canRequestFocus: true,
@@ -57,19 +59,19 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
     return (await showCupertinoModalPopup(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Alert! are sure to Exit??'),
+            title: const Text('Alert! are sure to Exit??'),
             actions: [
               ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('cancle')),
+                  child: const Text('cancle')),
               ElevatedButton(
                   onPressed: () {
                     Navigator.of(context)
                         .popUntil((Route route) => route.settings.name == '/');
                   },
-                  child: Text('save and exit')),
+                  child: const Text('save and exit')),
             ],
           ),
         )) ??

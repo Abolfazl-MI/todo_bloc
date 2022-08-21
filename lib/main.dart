@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:todo_bloc/Data/repositories/database_repo.dart';
-import 'package:todo_bloc/Presentation/cubit/theme_cubit_cubit.dart';
+
+import 'package:todo_bloc/Presentation/note_bloc/note_bloc.dart';
 
 import 'package:todo_bloc/Presentation/note_bloc/note_observer.dart';
+import 'package:todo_bloc/Presentation/views/add_update_note_view.dart';
 import 'package:todo_bloc/Presentation/views/home_screen.dart';
 import 'package:todo_bloc/Presentation/views/note_detail_screen.dart';
 
@@ -29,18 +31,16 @@ class MyApp extends StatelessWidget {
       ),
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.dark,
-      // themeMode: state is LightThemeCubitState ?ThemeMode.light:ThemeMode.dark,
-      // home: RepositoryProvider(
-      //   create: (context) => NoteRepository(),
-      //   child: const HomeScreen(),
-      // ),
       initialRoute: '/',
       routes: {
         '/': (context) => RepositoryProvider(
               create: (context) => NoteRepository(),
-              child: HomeScreen(),
+              child: const HomeScreen(),
             ),
-        '/note_detail': (context) => NoteDetailScreen()
+        '/note_detail': (context) => const NoteDetailScreen(), 
+        '/note_add_update': (context) => BlocProvider(
+          create: (context)=>NoteBloc(noteRepository: NoteRepository()),
+          child: AddUpdateNoteScreen()), 
       },
     );
   }

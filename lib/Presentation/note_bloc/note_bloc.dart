@@ -15,7 +15,7 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
   final NoteRepository _noteRepository;
   NoteBloc({required NoteRepository noteRepository})
       : _noteRepository = noteRepository,
-        super(NoteLoadingState()) {
+        super(NoteInitialState()) {
     on<AddNoteEvent>(_addNoteEvent);
     on<UpdateNoteEvent>(_updateNoteEvent);
     on<DeleteNoteEvent>(_deleteNoteEvent);
@@ -140,7 +140,10 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
         await _noteRepository.initDataBase();
     resualt.fold(
       (NoteError error) => emit(NoteErrorState(error.errorMsg.toString())),
-      (List<Note>dbNotes) => emit(NoteLoadedState(dbNotes)),
+      (List<Note> dbNotes) {
+        print(dbNotes.length);
+        emit(NoteLoadedState(dbNotes));
+      },
     );
   }
 }
