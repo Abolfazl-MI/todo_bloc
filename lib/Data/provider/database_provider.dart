@@ -27,6 +27,10 @@ class DataBaseProvider {
     }
   }
 
+  Stream<BoxEvent> noteStream() {
+    return Hive.box(_boxName).watch();
+  }
+
   Future<RawData> createNote({required Note note}) async {
     try {
       log('********creating_Note:{title :${note.title}, body:${note.body},********',

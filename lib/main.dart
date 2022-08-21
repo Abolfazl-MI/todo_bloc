@@ -35,7 +35,10 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => RepositoryProvider(
               create: (context) => NoteRepository(),
-              child: const HomeScreen(),
+              child: BlocProvider(
+                create: (context)=>NoteBloc(noteRepository: RepositoryProvider.of(context))..add(IntitNoteDB()),
+                child: const HomeScreen(),
+              ),
             ),
         '/note_detail': (context) => const NoteDetailScreen(), 
         '/note_add_update': (context) => BlocProvider(
