@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-
 import 'package:hive/hive.dart';
 import 'package:todo_bloc/Data/models/note_modle.dart';
 import 'package:todo_bloc/core/crud_enum.dart';
@@ -51,27 +50,46 @@ class DataBaseProvider {
   }
 
   Future<RawData> updateNote({
-    required String currentTitle,
-    String? newTitle,
-    String? newBody,
+    required int index,
+    required String newTitle,
+    required String newBody,
   }) async {
     try {
-      log("******updating note*******", name: 'DB_PROVIDER');
-      Note currentNote = _noteBox!.values
-          .firstWhere((element) => element.title == currentTitle);
-      if (newTitle != null) {
-        currentNote.copyWith(title: newTitle);
-        currentNote.save();
-        return RawData(status: CrudStatus.success, data: currentNote);
-      }
-      if (newBody != null) {
-        currentNote.copyWith(body: newBody);
-        currentNote.save();
-        return RawData(status: CrudStatus.success, data: currentNote);
-      } else {
-        return RawData(
-            status: CrudStatus.failure, data: 'No data Provided for Update');
-      }
+      // if (!await Hive.boxExists(_boxName)) {
+      _noteBox = await Hive.openBox(_boxName);
+      Note? cNote = _noteBox!.getAt(index);
+      cNote = Note(title: newTitle, body: newBody);
+      _noteBox!.putAt(index, cNote);
+      return RawData(status: CrudStatus.success, data: cNote);
+      // log("******updating note*******", name: 'DB_PROVIDER');
+      // Note currentNote = _noteBox!.values
+      //     .firstWhere((element) => element.title == currentTitle);
+      // print(currentNote.toString());
+
+      // Note newNote = currentNote.copyWith(title: newTitle, body: newBody);
+      // newNote.save();
+      // print(newNote.toString());
+      // return RawData(status: CrudStatus.success, data: newNote);
+      //     .where((element) => element.title == currentTitle);
+      // currentNote.copyWith(
+      //   title: newTitle,
+      //   body: newBody,
+      // );
+      // currentNote.save();
+      // return RawData(status: CrudStatus.success, data: currentNote);
+      // if (newTitle != null) {
+      //   currentNote.copyWith(title: newTitle);
+      //   currentNote.save();
+      //   return RawData(status: CrudStatus.success, data: currentNote);
+      // }
+      // if (newBody != null) {
+      //   currentNote.copyWith(body: newBody);
+      //   currentNote.save();
+      //   return RawData(status: CrudStatus.success, data: currentNote);
+      // } else {
+      //   return RawData(
+      //       status: CrudStatus.failure, data: 'No data Provided for Update');
+      // }
     } catch (e) {
       return RawData(status: CrudStatus.failure, data: e.toString());
     }

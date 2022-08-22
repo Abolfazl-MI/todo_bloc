@@ -77,56 +77,18 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
   FutureOr<void> _updateNoteEvent(
       UpdateNoteEvent event, Emitter<NoteState> emit) async {
     log('***********updating note***********', name: 'NOTE_BLOC');
-
-    emit(NoteLoadingState());
-    if (event.title != null) {
-      Either<NoteError, Note> resualt = await _noteRepository.updateNote(
-          currentTitle: event.currentTitle, title: event.title);
-      resualt.fold(
+    Either<NoteError, Note> resualt = await _noteRepository.updateNote(
+        index: event.currentIndex, title: event.title, body: event.body);
+    resualt.fold(
         (NoteError error) => emit(NoteErrorState(error.errorMsg.toString())),
         (Note note) {
-          var curentNote = notes
-              .firstWhere((element) => element.title == event.currentTitle);
-          var newNote = curentNote.copyWith(title: note.title, body: note.body);
-          notes.remove(curentNote);
-          notes.add(newNote);
-          emit(NoteLoadedState(notes));
-        },
-      );
-    }
-    if (event.body != null) {
-      Either<NoteError, Note> resualt = await _noteRepository.updateNote(
-          currentTitle: event.currentTitle, body: event.body);
-      resualt.fold(
-        (NoteError error) => emit(NoteErrorState(error.errorMsg!)),
-        (Note note) {
-          var curentNote = notes
-              .firstWhere((element) => element.title == event.currentTitle);
-          var newNote = curentNote.copyWith(body: note.body);
-          notes.remove(curentNote);
-          notes.add(newNote);
-          emit(NoteLoadedState(notes));
-        },
-      );
-    }
-
-    if (event.body != null && event.title != null) {
-      Either<NoteError, Note> resualt = await _noteRepository.updateNote(
-          currentTitle: event.currentTitle,
-          body: event.body,
-          title: event.title);
-      resualt.fold(
-        (NoteError error) => emit(NoteErrorState(error.errorMsg!)),
-        (Note note) {
-          var curentNote = notes
-              .firstWhere((element) => element.title == event.currentTitle);
-          var newNote = curentNote.copyWith(body: note.body, title: note.title);
-          notes.remove(curentNote);
-          notes.add(newNote);
-          emit(NoteLoadedState(notes));
-        },
-      );
-    }
+      var curentNote =
+          notes.firstWhere((element) => element.title == event.currentIndex);
+      var newNote = curentNote.copyWith(title: note.title, body: note.body);
+      notes.remove(curentNote);
+      notes.add(newNote);
+    });
+    add(LoadAllNoteEvent());
 
     if (event.title == null && event.body == null) {
       emit(NoteErrorState('No title or body changes for update'));

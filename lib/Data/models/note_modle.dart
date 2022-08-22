@@ -28,8 +28,12 @@ class Note extends HiveObject {
   }
 
   factory Note.fromJson(Map<String, dynamic> json) => Note(
-    title: json['title'], 
-    body: json['body'], 
-    createdTime: json['createdTime']
-  );
+      title: json['title'],
+      body: json['body'],
+      createdTime: json['createdTime']);
+
+  @override
+  String toString() {
+    return '${this.title}||${this.body}';
+  }
 }

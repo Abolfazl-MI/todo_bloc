@@ -1,7 +1,7 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_bloc/Presentation/routes/routes.dart';
 
 import 'package:todo_bloc/logic/note_bloc/note_bloc.dart';
 
@@ -14,17 +14,14 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          // MediaQuery.of(context).
-          await Navigator.of(context)
-              .pushNamed('/note_add_update', arguments: {'pageType': 'add'});
-          // context.watch<NoteBloc>().add(LoadAllNoteEvent());
+          await Navigator.of(context).pushNamed(AppRouteName.noteAddScreen);
+
           BlocProvider.of<NoteBloc>(context).add(LoadAllNoteEvent());
         },
         child: const Icon(
           Icons.note_add,
         ),
       ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       appBar: AppBar(
         title: const Text('Notes app'),
         centerTitle: true,
@@ -55,7 +52,8 @@ class HomeScreen extends StatelessWidget {
                           height: 90,
                           child: InkWell(
                             onTap: () {
-                              Navigator.of(context).pushNamed('/note_detail',
+                              Navigator.of(context).pushNamed(
+                                  AppRouteName.noteDetailScree,
                                   arguments: state.loadedNotes[index]);
                             },
                             child: Card(
@@ -85,17 +83,26 @@ class HomeScreen extends StatelessWidget {
                                         Container(
                                           width: 100,
                                           height: 35,
-                                          // color: Colors.green,
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceEvenly,
                                             children: [
                                               Container(
-                                                // decoration: BoxDecoration(
-                                                //   shape: BoxShape
-                                                // ),
                                                 child: IconButton(
-                                                    onPressed: () {},
+                                                    onPressed: () async {
+                                                      await Navigator.of(
+                                                              context)
+                                                          .pushNamed(
+                                                              AppRouteName
+                                                                  .noteEditScreen,
+                                                              arguments: {
+                                                            'pageType': 'edit',
+                                                            'data': state
+                                                                    .loadedNotes[
+                                                                index],
+                                                            'index': index
+                                                          });
+                                                    },
                                                     icon: Icon(
                                                         Icons.edit_outlined)),
                                               ),

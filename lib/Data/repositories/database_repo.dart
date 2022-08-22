@@ -41,25 +41,14 @@ class NoteRepository {
 
   // update note in database
   Future<Either<NoteError, Note>> updateNote(
-      {String? title, String? body, required String currentTitle}) async {
-    if (title != null) {
-      RawData result = await _databaseProvider.updateNote(
-          currentTitle: currentTitle, newTitle: title);
+      {required String title,required String body, required int index}) async {
+    if(title!=null&&body!=null){
+         RawData result = await _databaseProvider.updateNote(
+          index: index, newTitle: title, newBody: body);
       if (result.status == CrudStatus.success) {
         return Right(result.data);
       } else if (result.status == CrudStatus.failure) {
         return Left(NoteError(result.data));
-      }
-    }
-    if (body != null) {
-      RawData result = await _databaseProvider.updateNote(
-          currentTitle: currentTitle, newBody: body);
-      if (result.status == CrudStatus.success) {
-        return Right(result.data);
-      } else if (result.status == CrudStatus.failure) {
-        return Left(NoteError(result.data));
-      } else {
-        return Left(NoteError('UNEXPECTED ERRO'));
       }
     }
 

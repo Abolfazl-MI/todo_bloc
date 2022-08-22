@@ -20,17 +20,13 @@ class DeleteNoteEvent extends NoteEvent {
 }
 
 class UpdateNoteEvent extends NoteEvent {
-  final String? title;
-  final String? body;
-  final String currentTitle;
-  const UpdateNoteEvent({this.title, this.body, required this.currentTitle});
+  final String title;
+  final String body;
+  final int currentIndex;
+  const UpdateNoteEvent(
+      {required this.title, required this.body, required this.currentIndex});
 }
 
 class LoadAllNoteEvent extends NoteEvent {}
 
-class IntitNoteDB extends NoteEvent{
-  
-}
-
-
-
+class IntitNoteDB extends NoteEvent {}
