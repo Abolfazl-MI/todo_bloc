@@ -55,7 +55,8 @@ class HomeScreen extends StatelessWidget {
                           height: 90,
                           child: InkWell(
                             onTap: () {
-                              Navigator.of(context).pushNamed('/note_detail', arguments:state.loadedNotes[index]);
+                              Navigator.of(context).pushNamed('/note_detail',
+                                  arguments: state.loadedNotes[index]);
                             },
                             child: Card(
                               elevation: 8,
@@ -73,9 +74,47 @@ class HomeScreen extends StatelessWidget {
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18),
                                     )),
-                                    Text(
-                                      'created at : ${state.loadedNotes[index].createdTime}',
-                                      style: const TextStyle(fontSize: 12),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'created at : ${state.loadedNotes[index].createdTime}',
+                                          style: const TextStyle(fontSize: 12),
+                                        ),
+                                        Container(
+                                          width: 100,
+                                          height: 35,
+                                          // color: Colors.green,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              Container(
+                                                // decoration: BoxDecoration(
+                                                //   shape: BoxShape
+                                                // ),
+                                                child: IconButton(
+                                                    onPressed: () {},
+                                                    icon: Icon(
+                                                        Icons.edit_outlined)),
+                                              ),
+                                              IconButton(
+                                                  onPressed: () async {
+                                                    BlocProvider.of<NoteBloc>(
+                                                            context)
+                                                        .add(DeleteNoteEvent(
+                                                            state
+                                                                .loadedNotes[
+                                                                    index]
+                                                                .title!));
+                                                  },
+                                                  icon: Icon(
+                                                      Icons.delete_outlined)),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
