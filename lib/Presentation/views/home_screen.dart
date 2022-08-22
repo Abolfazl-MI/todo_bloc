@@ -1,8 +1,9 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo_bloc/Presentation/note_bloc/note_bloc.dart';
-import 'package:todo_bloc/Presentation/views/note_detail_screen.dart';
+
+import 'package:todo_bloc/logic/note_bloc/note_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -13,6 +14,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
+          // MediaQuery.of(context).
           await Navigator.of(context)
               .pushNamed('/note_add_update', arguments: {'pageType': 'add'});
           // context.watch<NoteBloc>().add(LoadAllNoteEvent());
@@ -26,12 +28,7 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Notes app'),
         centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.light),
-          )
-        ],
+        actions: [],
       ),
       body: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -58,8 +55,7 @@ class HomeScreen extends StatelessWidget {
                           height: 90,
                           child: InkWell(
                             onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => NoteDetailScreen()));
+                              Navigator.of(context).pushNamed('/note_detail', arguments:state.loadedNotes[index]);
                             },
                             child: Card(
                               elevation: 8,

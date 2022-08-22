@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_bloc/Data/models/note_modle.dart';
 
-import 'package:todo_bloc/Presentation/note_bloc/note_bloc.dart';
+
+import 'package:todo_bloc/logic/note_bloc/note_bloc.dart';
 
 class AddUpdateNoteScreen extends StatelessWidget {
   AddUpdateNoteScreen({

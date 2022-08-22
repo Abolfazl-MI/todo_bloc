@@ -32,5 +32,5 @@ class IntitNoteDB extends NoteEvent{
   
 }
 
-// create note event 
+
 
