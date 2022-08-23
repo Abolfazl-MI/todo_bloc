@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_bloc/Presentation/routes/routes.dart';
@@ -96,12 +95,15 @@ class HomeScreen extends StatelessWidget {
                                                               AppRouteName
                                                                   .noteEditScreen,
                                                               arguments: {
-                                                            'pageType': 'edit',
                                                             'data': state
                                                                     .loadedNotes[
                                                                 index],
                                                             'index': index
                                                           });
+                                                      BlocProvider.of<NoteBloc>(
+                                                              context)
+                                                          .add(
+                                                              LoadAllNoteEvent());
                                                     },
                                                     icon: Icon(
                                                         Icons.edit_outlined)),

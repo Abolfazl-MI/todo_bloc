@@ -7,16 +7,14 @@ import 'package:todo_bloc/Data/models/note_modle.dart';
 
 import 'package:todo_bloc/logic/note_bloc/note_bloc.dart';
 
-class AddUpdateNoteScreen extends StatelessWidget {
-  AddUpdateNoteScreen({
+class AddNoteScreen extends StatelessWidget {
+  AddNoteScreen({
     super.key,
   });
   TextEditingController titleController = TextEditingController();
   TextEditingController bodyController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    final dataPassed =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -85,11 +83,13 @@ class AddUpdateNoteScreen extends StatelessWidget {
       }
       if (state is NoteErrorState) {
         log(state.error);
-        showCupertinoModalPopup(
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          showCupertinoModalPopup(
             context: context,
             builder: (context) => AlertDialog(
                   content: Text(state.error),
                 ));
+        });
       }
 
       return SizedBox(
@@ -107,7 +107,6 @@ class AddUpdateNoteScreen extends StatelessWidget {
               child: Center(
                 child: TextFormField(
                   controller: titleController,
-                 
                   style: const TextStyle(
                       fontSize: 25, fontWeight: FontWeight.w700),
                   decoration: const InputDecoration(

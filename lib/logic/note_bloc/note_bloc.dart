@@ -77,18 +77,14 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
   FutureOr<void> _updateNoteEvent(
       UpdateNoteEvent event, Emitter<NoteState> emit) async {
     log('***********updating note***********', name: 'NOTE_BLOC');
-    Either<NoteError, Note> resualt = await _noteRepository.updateNote(
+    Either<NoteError, List<Note>> resualt = await _noteRepository.updateNote(
         index: event.currentIndex, title: event.title, body: event.body);
     resualt.fold(
         (NoteError error) => emit(NoteErrorState(error.errorMsg.toString())),
-        (Note note) {
-      var curentNote =
-          notes.firstWhere((element) => element.title == event.currentIndex);
-      var newNote = curentNote.copyWith(title: note.title, body: note.body);
-      notes.remove(curentNote);
-      notes.add(newNote);
-    });
-    add(LoadAllNoteEvent());
+        (List<Note>notes)=> emit(NoteLoadedState(notes))
+        );
+  
+
 
     if (event.title == null && event.body == null) {
       emit(NoteErrorState('No title or body changes for update'));

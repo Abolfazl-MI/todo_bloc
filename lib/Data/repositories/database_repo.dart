@@ -40,10 +40,10 @@ class NoteRepository {
   }
 
   // update note in database
-  Future<Either<NoteError, Note>> updateNote(
-      {required String title,required String body, required int index}) async {
-    if(title!=null&&body!=null){
-         RawData result = await _databaseProvider.updateNote(
+  Future<Either<NoteError, List<Note>>> updateNote(
+      {required String title, required String body, required int index}) async {
+    if (title != null && body != null) {
+      RawData result = await _databaseProvider.updateNote(
           index: index, newTitle: title, newBody: body);
       if (result.status == CrudStatus.success) {
         return Right(result.data);

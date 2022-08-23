@@ -60,7 +60,8 @@ class DataBaseProvider {
       Note? cNote = _noteBox!.getAt(index);
       cNote = Note(title: newTitle, body: newBody);
       _noteBox!.putAt(index, cNote);
-      return RawData(status: CrudStatus.success, data: cNote);
+      List<Note> allNotes = _noteBox!.values.toList();
+      return RawData(status: CrudStatus.success, data: allNotes);
       // log("******updating note*******", name: 'DB_PROVIDER');
       // Note currentNote = _noteBox!.values
       //     .firstWhere((element) => element.title == currentTitle);
